@@ -13,3 +13,19 @@ import dynamic_raster_sld.views
 urlpatterns = [
     url(r'^$', dynamic_raster_sld.views.index, name='index'),
 ]
+
+## Required Query String Parameters
+####layer-id
+  This is the name of the ID field that gets set in the admin panel of the ncWMS2 Server
+####layer-title
+  This is the title of the layer
+####color-palette
+  This is a list of colors (8 digit hex with alpha)
+  The list will be 1 longer than list of thresholds
+  Ex. FF0000FF,FF00FFFF,FF00FF00,FFFFFF00,FFFFC800,FFFFAFAF,FFFF0000
+  Notice you do not include the # (taken out to free up character in the URL)
+####thresholds
+  These are the breakpoints for the color palette list
+  Ex. 275.0,280.0,285.0,290.0,295.0,300.0
+  Note: the thresholds list is one less than the color palette list
+

@@ -1,10 +1,50 @@
+from django.http import HttpResponse
 from django.shortcuts import render
 
 def index(request):
-    layer_name = "my_layer_name"
-    layer_workspace = "my_layer_workspace"
-    color_palette = ["#FF0000FF", "#FF00FFFF", "#FF00FF00", "#FFFFFF00", "#FFFFC800", "#FFFFAFAF", "#FFFF0000"]
-    thresholds = [275.0, 280.0, 285.0, 290.0, 295.0, 300.0]
+    errors = []
+
+    # Layer ID
+    if 'layer-id' in request.GET:
+        try:
+            layer_id = request.GET['layer-id']
+        except:
+            errors.append("You need to enter a layer-id parameter in the URL")
+    else:
+        errors.append("You need to enter a layer-id parameter in the URL")
+
+    # Layer title
+    if 'layer-title' in request.GET:
+        try:
+            layer_title = request.GET['layer-title']
+        except:
+            errors.append("You need to enter a layer-title parameter in the URL")
+    else:
+        errors.append("You need to enter a layer-title parameter in the URL")
+
+    # Color Palette List
+    if 'color-palette' in request.GET:
+        try:
+            color_palette_string = request.GET['color-palette']
+            #print color_palette_string
+        except:
+           errors.append("You need to enter a color-palette parameter in the URL") 
+    else:
+        errors.append("You need to specify a color-palette parameter in the URL")
+
+    # Color Palette List
+    if 'thresholds' in request.GET:
+        try:
+            thresholds_string = request.GET['thresholds']
+            print thresholds_string
+        except:
+           errors.append("You need to enter a thresholds parameter in the URL") 
+    else:
+        errors.append("You need to specify a thresholds parameter in the URL")
+
+    # Prepare colors and thresholds for template
+    color_palette = ["#%s" % color for color in color_palette_string.split(",")]
+    thresholds = ["%f" % float(threshold) for threshold in thresholds_string.split(",")]
 
     # Hold a list of key, value pairs for color palettes
     color_palette_list_of_dictionaries = []
@@ -19,11 +59,13 @@ def index(request):
             new_dictionary[color_palette[index]] = ''
             color_palette_list_of_dictionaries.append(new_dictionary)
 
-    print color_palette_list_of_dictionaries
-    return render(request, 'dynamic_raster_sld/index.html',
+    # Return error messages if any exist
+    if errors:
+        return HttpResponse(errors)
+    else:
+        return render(request, 'dynamic_raster_sld/index.html',
         {
-          "layer_name": layer_name,
-          "layer_workspace": layer_workspace,
+          "layer_id": layer_id,
+          "layer_title": layer_title,
           "color_palette_list_of_dictionaries": color_palette_list_of_dictionaries
-        },
-           content_type="application/xhtml+xml")
+        },content_type="application/xhtml+xml")
