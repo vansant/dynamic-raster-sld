@@ -42,27 +42,28 @@ def index(request):
     else:
         errors.append("You need to specify a thresholds parameter in the URL")
 
-    # Prepare colors and thresholds for template
-    color_palette = ["#%s" % color for color in color_palette_string.split(",")]
-    thresholds = ["%f" % float(threshold) for threshold in thresholds_string.split(",")]
-
-    # Hold a list of key, value pairs for color palettes
-    color_palette_list_of_dictionaries = []
-    
-    # Go over all colors and add them to a list
-    for index in range(len(color_palette)):
-        new_dictionary = {}
-        try:
-            new_dictionary[color_palette[index]] = thresholds[index]
-            color_palette_list_of_dictionaries.append(new_dictionary)
-        except:
-            new_dictionary[color_palette[index]] = ''
-            color_palette_list_of_dictionaries.append(new_dictionary)
-
     # Return error messages if any exist
     if errors:
         return HttpResponse(errors)
     else:
+
+         # Prepare colors and thresholds for template
+        color_palette = ["#%s" % color for color in color_palette_string.split(",")]
+        thresholds = ["%f" % float(threshold) for threshold in thresholds_string.split(",")]
+
+        # Hold a list of key, value pairs for color palettes
+        color_palette_list_of_dictionaries = []
+        
+        # Go over all colors and add them to a list
+        for index in range(len(color_palette)):
+            new_dictionary = {}
+            try:
+                new_dictionary[color_palette[index]] = thresholds[index]
+                color_palette_list_of_dictionaries.append(new_dictionary)
+            except:
+                new_dictionary[color_palette[index]] = ''
+                color_palette_list_of_dictionaries.append(new_dictionary)
+
         return render(request, 'dynamic_raster_sld/index.html',
         {
           "layer_id": layer_id,
